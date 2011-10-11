@@ -8,3 +8,14 @@ Enjoy!
 
 -- 
 Sean B. Palmer, http://inamidst.com/sbp/
+
+
+In this Fork...
+===============
+
+TODO
+----
+
+- generate configuration local to the install [ ]
+- maintain list of dependencies for 3rd party modules [ ]
+
