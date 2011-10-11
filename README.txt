@@ -18,4 +18,4 @@ TODO
 
 - generate configuration local to the install [ ]
 - maintain list of dependencies for 3rd party modules [ ]
-
+- add unit tests [ ]
