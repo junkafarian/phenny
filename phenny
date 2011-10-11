@@ -59,28 +59,20 @@ def create_default_config(fn):
    """)
    f.close()
 
-def create_dotdir(dotdir): 
-   print 'Creating a config directory at ~/.phenny...'
-   try: os.mkdir(dotdir)
-   except Exception, e: 
-      print >> sys.stderr, 'There was a problem creating %s:' % dotdir
-      print >> sys.stderr, e.__class__, str(e)
-      print >> sys.stderr, 'Please fix this and then run phenny again.'
-      sys.exit(1)
+def check_config(config):
+   if len(config) == 0:
+      log.info('No config file found. Creating `config.py`')
 
-   print 'Creating a default config file at ~/.phenny/default.py...'
-   default = os.path.join(dotdir, 'default.py')
-   create_default_config(default)
+      # TODO: confirm with user before create file
+      create_default_config('config.py')
 
-   print 'Done; now you can edit default.py, and run phenny! Enjoy.'
-   sys.exit(0)
-
-def check_dotdir(): 
-   if not os.path.isdir(dotdir): 
-      create_dotdir(dotdir)
+      log.info('Generated default config in `config.py`')
+      log.info('Edit this file and rerun the command')
+      return False
+   return True
 
 def config_names(config): 
-   config = config or 'default'
+   config = config or 'config'
 
    def files(d): 
       names = os.listdir(d)
@@ -94,17 +86,7 @@ def config_names(config):
    if os.path.isdir(here): 
       return files(here)
 
-   there = os.path.join(dotdir, config)
-   if os.path.isfile(there): 
-      return [there]
-   if os.path.isfile(there + '.py'): 
-      return [there + '.py']
-   if os.path.isdir(there): 
-      return files(there)
-
-   print >> sys.stderr, "Error: Couldn't find a config file!"
-   print >> sys.stderr, 'What happened to ~/.phenny/default.py?'
-   sys.exit(1)
+   return []
 
 def main(argv=None): 
    # Step One: Parse The Command Line
@@ -115,16 +97,21 @@ def main(argv=None):
    opts, args = parser.parse_args(argv)
    if args: log.error('Warning: ignoring spurious arguments')
 
+   config = config_names(opts.config)
+   
    # Step Two: Check Dependencies
 
    check_python_version() # require python2.4 or later
-   check_dotdir() # require ~/.phenny, or make it and exit
+   check_config(config) # require a config file, if none are found, create one and exit
 
    # Step Three: Load The Configurations
 
    config_modules = []
-   for config_name in config_names(opts.config): 
-      name = os.path.basename(config_name).split('.')[0] + '_config'
+   for config_name in config:
+      basename = os.path.basename(config_name).split('.')[0]
+      if basename == 'config': basename = 'default'
+      
+      name = basename + '_config'
       module = imp.load_source(name, config_name)
       module.filename = config_name
 
