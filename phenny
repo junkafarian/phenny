@@ -143,6 +143,13 @@ def main(argv=None):
 
       if not os.path.isdir(getattr(module, 'homedir', False)):
          module.homedir = os.path.dirname(os.path.abspath(config_name))
+      
+      vardir = os.path.join(module.homedir, 'var')
+      if not os.path.isdir(vardir):
+         log.info('No `var` directory found, creating one to store module data')
+         os.mkdir(vardir)
+
+      module.vardir = vardir
 
       config_modules.append(module)
 
