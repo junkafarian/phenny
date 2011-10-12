@@ -16,6 +16,6 @@ In this Fork...
 TODO
 ----
 
-- generate configuration local to the install [ ]
+- generate configuration local to the install [x]
 - maintain list of dependencies for 3rd party modules [ ]
 - add unit tests [ ]
