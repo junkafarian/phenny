@@ -15,6 +15,11 @@ import sys, os, imp, optparse, logging
 from textwrap import dedent as trim
 
 log = logging.getLogger(__name__)
+handler = logging.StreamHandler(sys.stdout)
+f = logging.Formatter("[phenny] %(asctime)s [%(levelname)s] %(message)s", None)
+handler.setFormatter(f)
+log.addHandler(handler)
+log.level = logging.DEBUG
 
 def check_python_version(): 
    if sys.version_info < (2, 4): 
